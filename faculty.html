@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduNest | Faculty Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f4f6fa;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .navbar {
+            background: #004aad;
+        }
+        .navbar-brand {
+            color: white;
+            font-weight: bold;
+        }
+        h3 {
+            color: #004aad;
+        }
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .count-box {
+            background: #004aad;
+            color: white;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .count-box h2 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        .count-box p {
+            margin: 0;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg px-4">
+        <a class="navbar-brand" href="#">EduNest Faculty Dashboard</a>
+    </nav>
+
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-info">
+                {% for msg in messages %}
+                    <div>{{ msg }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Stats -->
+        <div class="count-box">
+            <h2>{{ total_subs }}</h2>
+            <p>Total Submissions Received</p>
+        </div>
+
+        <div class="row">
+            <!-- Submissions -->
+            <div class="col-md-7">
+                <div class="card p-3 mb-4">
+                    <h3>📑 Student Submissions</h3>
+                    <table class="table table-striped table-hover mt-3">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Student</th>
+                                <th>Assignment</th>
+                                <th>Marks</th>
+                                <th>Feedback</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in submissions %}
+                            <tr>
+                                <td>{{ s.Sub_ID }}</td>
+                                <td>{{ s.Student }}</td>
+                                <td>{{ s.Assignment }}</td>
+                                <td>{{ s.MarksAwarded or '-' }}</td>
+                                <td>{{ s.Feedback or '-' }}</td>
+                                <td>
+                                    <form action="/faculty/feedback" method="POST" class="d-flex gap-1">
+                                        <input type="hidden" name="sub_id" value="{{ s.Sub_ID }}">
+                                        <input type="number" name="marks" placeholder="Marks" class="form-control form-control-sm" style="width: 80px;">
+                                        <input type="text" name="feedback" placeholder="Feedback" class="form-control form-control-sm" style="width: 150px;">
+                                        <button type="submit" class="btn btn-success btn-sm">Save</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Resources -->
+            <div class="col-md-5">
+                <div class="card p-3 mb-4">
+                    <h3>📚 Manage Resources</h3>
+
+                    <!-- Add Resource Form -->
+                    <form action="/faculty/{{ fid }}/add_resource" method="POST" class="row g-2 mt-2">
+                        <div class="col-md-4">
+                            <input type="text" name="title" class="form-control" placeholder="Title" required>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" name="rtype" class="form-control" placeholder="Type" required>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="filelink" class="form-control" placeholder="File Link" required>
+                        </div>
+                        <div class="col-md-8 mt-2">
+                            <select name="course_id" class="form-select" required>
+                                <option value="">Select Course</option>
+                                {% for c in courses %}
+                                    <option value="{{ c.Course_ID }}">{{ c.CourseName }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4 mt-2">
+                            <button type="submit" class="btn btn-success w-100">Add Resource</button>
+                        </div>
+                    </form>
+
+                    <!-- Resource Table -->
+                    <table class="table table-striped table-hover mt-3">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Course</th>
+                                <th>Date</th>
+                                <th>Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in resources %}
+                            <tr>
+                                <td>{{ r.Resource_ID }}</td>
+                                <td>{{ r.Title }}</td>
+                                <td>{{ r.Type }}</td>
+                                <td>{{ r.CourseName }}</td>
+                                <td>{{ r.UploadDate }}</td>
+                                <td><a href="{{ r.FileLink }}" target="_blank">Open</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

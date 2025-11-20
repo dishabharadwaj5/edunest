@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Submissions for Student ID {{ sid }}</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr><th>Submission ID</th><th>Assignment</th><th>Marks</th><th>Feedback</th><th>Date</th></tr>
+    </thead>
+    <tbody>
+    {% for sub in submissions %}
+        <tr>
+            <td>{{ sub[0] }}</td>
+            <td>{{ sub[1] }}</td>
+            <td>{{ sub[2] }}</td>
+            <td>{{ sub[3] }}</td>
+            <td>{{ sub[4] }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

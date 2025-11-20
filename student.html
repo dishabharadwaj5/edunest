@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduNest | Student Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f4f7fb;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .navbar {
+            background: #004aad;
+        }
+        .navbar-brand {
+            color: white !important;
+            font-weight: bold;
+        }
+        h2 {
+            color: #004aad;
+        }
+        .card {
+            border-radius: 12px;
+            box-shadow: 0px 3px 10px rgba(0,0,0,0.1);
+        }
+        .summary-box {
+            background: #e8f0ff;
+            border: 1px solid #bcd4ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar px-4">
+        <a class="navbar-brand">EduNest | Student Dashboard</a>
+    </nav>
+
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-info">
+                {% for msg in messages %}
+                    <div>{{ msg }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="summary-box text-center">
+            <h4>📊 Performance Summary</h4>
+            <p class="mb-1">Total Marks Scored: <strong>{{ total_marks }}</strong></p>
+            <p>Average Marks: <strong>{{ avg_marks }}</strong></p>
+        </div>
+
+        <div class="card p-3">
+            <h2>📝 Your Submissions</h2>
+            <table class="table table-striped table-hover mt-3">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Submission ID</th>
+                        <th>Assignment</th>
+                        <th>Course</th>
+                        <th>Marks Awarded</th>
+                        <th>Feedback</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in submissions %}
+                    <tr>
+                        <td>{{ s.Sub_ID }}</td>
+                        <td>{{ s.Assignment }}</td>
+                        <td>{{ s.Course }}</td>
+                        <td>{{ s.MarksAwarded }}</td>
+                        <td>{{ s.Feedback }}</td>
+                        <td>
+                            {% if s.MarksAwarded %}
+                                ✅ Evaluated
+                            {% else %}
+                                ⏳ Pending
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
